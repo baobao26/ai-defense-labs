@@ -4,3 +4,6 @@
 [submodule "sysmon-parser"]
 	path = sysmon-parser
 	url = https://github.com/baobao26/sysmon-parser.git
+[submodule "siem-queries"]
+	path = siem-queries
+	url = https://github.com/baobao26/siem-queries.git
