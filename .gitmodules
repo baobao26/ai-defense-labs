@@ -1,0 +1,6 @@
+[submodule "mcp-hayabusa"]
+	path = mcp-hayabusa
+	url = https://github.com/baobao26/mcp-hayabusa.git
+[submodule "sysmon-parser"]
+	path = sysmon-parser
+	url = https://github.com/baobao26/sysmon-parser.git
