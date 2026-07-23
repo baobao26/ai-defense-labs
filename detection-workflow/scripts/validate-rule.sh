@@ -83,4 +83,4 @@ if [[ $status -ne 0 ]]; then
 fi
 
 echo "validate-rule: $file_path is valid" >&2
-exit 2
+exit 0
