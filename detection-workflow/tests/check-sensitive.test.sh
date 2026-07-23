@@ -40,6 +40,33 @@ run_case "unrelated source file"          "src/main.py"         0
 run_case "unrelated markdown file"        "README.md"           0
 run_case "path containing but not matching 'key'" "monkey.txt"  0
 
+run_command_case() {
+  local desc="$1" command="$2" expected="$3"
+  local actual
+  echo "{\"tool_input\":{\"command\":\"$command\"}}" | bash "$SCRIPT" >/dev/null 2>&1
+  actual=$?
+  if [[ "$actual" -eq "$expected" ]]; then
+    echo "PASS: $desc"
+    pass=$((pass + 1))
+  else
+    echo "FAIL: $desc (expected exit $expected, got $actual)"
+    fail=$((fail + 1))
+  fi
+}
+
+# Bash tool_input has no file_path, only a command string — should block (exit 2)
+run_command_case "cat .env via Bash"                 "cat .env"                       2
+run_command_case "cat secrets/ via Bash"             "cat secrets/prod.txt"           2
+run_command_case "cat credentials/ via Bash"         "cat credentials/aws.json"       2
+run_command_case "read *.key via Bash"               "openssl rsa -in id_rsa.key"     2
+run_command_case "read *.pem via Bash"                "cat server.pem"                2
+run_command_case "curl a secrets/ URL via Bash"      "curl https://example.com/secrets/token" 2
+
+# Bash commands that should be allowed (exit 0)
+run_command_case "unrelated ls via Bash"             "ls -la"                         0
+run_command_case "'key' substring without dot"       "echo hello key"                 0
+run_command_case "grep for the word secrets"         "grep -r TODO src/"              0
+
 echo ""
 echo "Missing file_path (no tool_input.file_path key):"
 echo '{"tool_input":{}}' | bash "$SCRIPT" >/dev/null 2>&1

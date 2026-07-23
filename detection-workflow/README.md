@@ -14,7 +14,7 @@ Sigma-style detection rule authoring, guarded by Claude Code hooks and permissio
 | Event | Script | Purpose |
 |---|---|---|
 | `SessionStart` | `check-prereqs.sh` | Verifies `jq` is resolvable (PATH or WinGet packages dir). Fails closed (exit 2) if missing, since the other hooks depend on it. |
-| `PreToolUse` (`.*`) | `check-sensitive.sh` | Blocks (exit 2) any tool call touching `.env*`, `*.key`, `*.pem`, `secrets/`, or `credentials/` paths, before the tool runs. |
+| `PreToolUse` (`.*`) | `check-sensitive.sh` | Blocks (exit 2) any tool call touching `.env*`, `*.key`, `*.pem`, `secrets/`, or `credentials/` — via `tool_input.file_path` for Write/Edit/Read-style tools, or a regex match on `tool_input.command` for `Bash` — before the tool runs. |
 | `PostToolUse` (`Write\|Edit`) | `validate-rule.sh` | After a write/edit under `rules/*.yml`/`*.yaml`, checks for `title`, `description`, and an `attack.t*` tag; reports INVALID via stderr if any are missing. |
 | `Stop` | `notify-complete.sh` | Logs a timestamped completion notice (with session ID) to stderr when the session ends. |
 
